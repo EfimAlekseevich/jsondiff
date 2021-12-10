@@ -9,28 +9,59 @@ def get_json(filename: str):
         return json.load(f)
 
 
-def diff(src: dict, cmp: dict):
-    """Recursive comparing key:value pairs"""
-    diff_dct = {'src': {}, 'cmp': {}}
-    for key, value in src.copy().items():
-        if key not in cmp:  # key only in src
-            diff_dct['src'].update({key: src.pop(key)})
-        elif value != cmp[key]:  # different values
-            diff_dct.update({key: diff(src.pop(key), cmp.pop(key))} if
-                            isinstance(value, dict) and isinstance(cmp[key], dict) else
-                            {key: {'src': src.pop(key), 'cmp': cmp.pop(key)}})
-        else:  # identical values
-            src.pop(key)
-            cmp.pop(key)
-    diff_dct['cmp'] = cmp
+def diff_lists(src: list, cmp: list):
+    """Recursive comparing list elements and key:value pairs"""
+    s = 'src'
+    c = 'cmp'
+    i = 0
+    diff_dict = {s: {}, c: {}}
+    while i < len(src):
+        if i < len(cmp):
+            if src[i] == cmp[i]:
+                pass
+            elif isinstance(src[i], dict) and isinstance(cmp[i], dict):
+                diff_dict[i] = diff_dicts(src[i], cmp[i])
+            elif isinstance(src[i], list) and isinstance(cmp[i], list):
+                diff_dict[i] = diff_lists(src[i], cmp[i])
+            else:
+                diff_dict[i] = {s: src[i], c: cmp[i]}
+        else:
+            diff_dict[i] = {s: src[i]}
+        i += 1
 
-    return diff_dct
+    while i < len(cmp):
+        diff_dict[i] = {c: src[i]}
+        i += 1
+
+    return diff_dict
+
+
+def diff_dicts(src: dict, cmp: dict):
+    s = 'src'
+    c = 'cmp'
+    diff_dict = {s: {}, c: {}}
+    for key, value in src.copy().items():
+        if key in cmp:
+            if src[key] == cmp[key]:
+                src.pop(key)
+                cmp.pop(key)
+            elif isinstance(src[key], dict) and isinstance(cmp[key], dict):
+                diff_dict[key] = diff_dicts(src[key], cmp[key])
+            elif isinstance(src[key], list) and isinstance(cmp[key], list):
+                diff_dict[key] = diff_lists(src[key], cmp[key])
+            else:
+                diff_dict.update({key: {s: src.pop(key), c: cmp.pop(key)}})
+        else:
+            diff_dict[s].update({key: src.pop(key)})
+
+    diff_dict[c] = cmp
+    return diff_dict
 
 
 def main():
-    source = get_json(sys.argv[1])
-    compared = get_json(sys.argv[2])
-    pprint.pprint(diff(source, compared))
+    source = [get_json(sys.argv[1])]
+    compared = [get_json(sys.argv[2])]
+    pprint.pprint(diff_lists(source, compared)[0])
 
 
 if __name__ == '__main__':
