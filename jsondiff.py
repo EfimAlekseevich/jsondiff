@@ -2,6 +2,9 @@ import pprint
 import json
 import sys
 
+s = 'src'
+c = 'cmp'
+
 
 def get_json(filename: str):
     """Read json file to dict"""
@@ -10,9 +13,8 @@ def get_json(filename: str):
 
 
 def diff_lists(src: list, cmp: list):
-    """Recursive comparing list elements and key:value pairs"""
-    s = 'src'
-    c = 'cmp'
+    """Recursive comparing list elements"""
+    global c, s
     i = 0
     diff_dict = {s: {}, c: {}}
     while i < len(src):
@@ -30,15 +32,15 @@ def diff_lists(src: list, cmp: list):
         i += 1
 
     while i < len(cmp):
-        diff_dict[i] = {c: src[i]}
+        diff_dict[i] = {c: cmp[i]}
         i += 1
 
     return diff_dict
 
 
 def diff_dicts(src: dict, cmp: dict):
-    s = 'src'
-    c = 'cmp'
+    """Recursive comparing key:value pairs"""
+    global c, s
     diff_dict = {s: {}, c: {}}
     for key, value in src.copy().items():
         if key in cmp:
@@ -46,9 +48,9 @@ def diff_dicts(src: dict, cmp: dict):
                 src.pop(key)
                 cmp.pop(key)
             elif isinstance(src[key], dict) and isinstance(cmp[key], dict):
-                diff_dict[key] = diff_dicts(src[key], cmp[key])
+                diff_dict[key] = diff_dicts(src.pop(key), cmp.pop(key))
             elif isinstance(src[key], list) and isinstance(cmp[key], list):
-                diff_dict[key] = diff_lists(src[key], cmp[key])
+                diff_dict[key] = diff_lists(src.pop(key), cmp.pop(key))
             else:
                 diff_dict.update({key: {s: src.pop(key), c: cmp.pop(key)}})
         else:
@@ -59,6 +61,9 @@ def diff_dicts(src: dict, cmp: dict):
 
 
 def main():
+    # global c, s
+    # s = sys.argv[1]
+    # c = sys.argv[2]
     source = [get_json(sys.argv[1])]
     compared = [get_json(sys.argv[2])]
     pprint.pprint(diff_lists(source, compared)[0])
