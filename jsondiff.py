@@ -24,9 +24,11 @@ def diff_lists(src: list, cmp: list):
     """Recursive comparing list elements"""
     global c, s
     i = 0
+    src_len = len(src)
+    cmp_len = len(cmp)
     diff_dict = {s: {}, c: {}}
-    while i < len(src):
-        if i < len(cmp):
+    while i < src_len:
+        if i < cmp_len:
             if src[i] == cmp[i]:
                 pass
             elif isinstance(src[i], dict) and isinstance(cmp[i], dict):
@@ -39,7 +41,7 @@ def diff_lists(src: list, cmp: list):
             diff_dict[i] = {s: src[i]}
         i += 1
 
-    while i < len(cmp):
+    while i < cmp_len:
         diff_dict[i] = {c: cmp[i]}
         i += 1
 

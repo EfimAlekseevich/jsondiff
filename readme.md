@@ -19,10 +19,6 @@ Format example:
 ### Output:
 the difference between two JSON files
 
-### Examples:
-see examples.py
-
-
 ## Easy path:
 `$ pip install jsondiff `
 ```
@@ -33,6 +29,10 @@ if __name__ == '__main__':
     pprint(diff(file_a, file_b))
 ```
 ## Core algorithm concepts:
+### Q&A
+What data structure do you need to use? - Non linear data structure -> Trees Data Structure -> dict
+Why? - Json is Trees Data Structure
+What's the asymptotic upper bound of the algorithm? -
 ### Diff types:
 - key exist only in source (source, src)
 - key exist only in compared (compared, cmp)
@@ -48,9 +48,8 @@ if __name__ == '__main__':
     - show differences between files?
 
 ### Output design:
-#### Json file containing differences:
 
-##### Dict differences:
+#### Dict differences:
 ```
 {
 'src': {key1: value1, key2: value2, ...}, # pairs only in source dict
@@ -64,7 +63,7 @@ if __name__ == '__main__':
 }
 ```
 
-##### List differences:
+#### List differences:
 ```
 {
 'src': {3: value3, 4: value4, ...}, # elements only in source list (3,4 - indexes of elements in source list)
