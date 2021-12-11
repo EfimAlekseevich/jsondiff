@@ -49,19 +49,36 @@ if __name__ == '__main__':
     - show differences between files?
 
 ### Output design:
-Json file containing differences:
+#### Json file containing differences:
+
+##### Dict differences:
 ```
 {
-'src': {key1: value1, key2: value2, ...}, # pairs only in source json
-'cmp': {key3: value3, key4: value4, ...}, # pairs only in source json
+'src': {key1: value1, key2: value2, ...}, # pairs only in source dict
+'cmp': {key3: value3, key4: value4, ...}, # pairs only in source dict
 'key5': {'src': value5, 'cmp': 'value6'} # pairs with identical key but different values
-'key6': {
-        'src': {key7: value7, key8: value8, ...}, # pairs only in source json
-        'cmp': {key3: value3, key4: value4, ...}, # pairs only in source json
+'key6': { pairs with identical key but different values with type list(or dict)
+        'src': {key7: value7, key8: value8, ...}, # pairs only in source dict
+        'cmp': {key3: value3, key4: value4, ...}, # pairs only in source dict
         'key5': {'src': value5, 'cmp': 'value6'} # pairs with identical key but different values}
         'key7': {etc}
 }
 ```
 
+##### List differences:
+```
+{
+'src': {3: value3, 4: value4, ...}, # elements only in source list (3,4 - indexes of elements in source list)
+'cmp': {}, # empty because the src list is longer
+0: {'src': 'value_s0', 'cmp': 'value_c0'} # elements with identical index but different values (0 - index)
+1: { # elements with identical index but different values with type list(or dict)
+        'src': {}, # empty because the cmp list is longer
+        'cmp': {3: value_3, 4: value_4, ...}, # elements only in cmp list (3,4 - indexes of elements in source list)
+        1: {'src': value_s1, 'cmp': 'value_c1'} # elements with identical index but different values
+        2: {etc}
+}
+```
+
 #### Problems
 - identical keys ("src" and "cmp")
+- keys as numbers (1, 2, 3) - decision: JSON names require double quotes.

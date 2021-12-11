@@ -1,6 +1,6 @@
 import pprint
 import json
-import sys
+from argv_parser import define_designations, parse_argv
 
 s = 'src'
 c = 'cmp'
@@ -56,16 +56,19 @@ def diff_dicts(src: dict, cmp: dict):
         else:
             diff_dict[s].update({key: src.pop(key)})
 
-    diff_dict[c] = cmp
+    diff_dict[c].update(cmp)
     return diff_dict
 
 
 def main():
-    # global c, s
-    # s = sys.argv[1]
-    # c = sys.argv[2]
-    source = [get_json(sys.argv[1])]
-    compared = [get_json(sys.argv[2])]
+
+    global c, s
+    args = parse_argv()
+    s, c = define_designations(args)
+
+    source = [get_json(args.source_filename)]
+    compared = [get_json(args.compared_filename)]
+
     pprint.pprint(diff_lists(source, compared)[0])
 
 
