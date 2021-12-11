@@ -32,9 +32,8 @@ from pprint import pprint
 if __name__ == '__main__':
     pprint(diff(file_a, file_b))
 ```
-## Core algorithm:
+## Core algorithm concepts:
 ### Diff types:
-
 - key exist only in source (source, src)
 - key exist only in compared (compared, cmp)
 - different values of the same key (diff, *key)
@@ -81,4 +80,28 @@ if __name__ == '__main__':
 
 #### Problems
 - identical keys ("src" and "cmp")
-- keys as numbers (1, 2, 3) - decision: JSON names require double quotes.
+- keys as numbers (1, 2, 3) - JSON names require double quotes.
+
+## Tutorial
+```
+usage: jsondiff.py [-h] [--source SOURCE] [--compared COMPARED] [--filenames] [--result_filename RESULT_FILENAME] [--text] [--json] source_filename compared_filename
+
+It is program for comparing two json files
+
+positional arguments:
+  source_filename       filename of the source json file
+  compared_filename     filename of the compared json file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --source SOURCE, -s SOURCE
+                        designation of the source file
+  --compared COMPARED, -c COMPARED
+                        designation of the compared file
+  --filenames, -f       use filenames for designation of the files
+  --result_filename RESULT_FILENAME, -r RESULT_FILENAME
+                        name for result file
+  --text, -t            save result to txt
+  --json, -j            save result to json !integer keys will replaced strings (1 -> "1")!
+
+```
