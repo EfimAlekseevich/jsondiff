@@ -88,7 +88,7 @@ def main():
     compared = [get_json(args.compared_filename)]
 
     # Processing
-    result = diff_lists(source, compared)[0]
+    result = diff_lists(source, compared, cs_key=args.cs_key_disable, cs_str=args.cs_str_disable)[0]
 
     # Output
     result_filename = 'result' if not args.result_filename else args.result_filename
