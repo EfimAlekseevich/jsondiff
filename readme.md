@@ -27,6 +27,10 @@ the difference between two JSON files
 - different values of the same key/index (diff, *key)
 
 ### Output design:
+```
+s = 'src' #  designation of the source file
+c = 'cmp' #  designation of the compared file
+```
 #### Dict differences:
 ```
 {
@@ -94,6 +98,7 @@ optional arguments:
     - Big-O notation represents the upper bound of the running time of an algorithm.
     Thus, it gives the worst-case complexity of an algorithm.
     Linear Complexity: O(n)
+    - n - the number of pairs of dictionaries and items in lists, including nested dictionaries and lists
 - Handling of incorrect json (multiple identical keys) needed? decision: json package for loading json files 
 - Is case sensitivity in keys, strings important when comparing? decision: add args for disable case sensitivity: -k, -a 
 - Is the order of the items in the list important when comparing? decision: important
@@ -101,5 +106,3 @@ optional arguments:
 - What is the purpose of this task?
     - Help fix differences in json files? decision: you can save the differences to a json file or use the result dict
     - Show differences between files? decision: you can save the differences to a text file
-
-n - the number of pairs of dictionaries and items in lists, including nested dictionaries and lists
