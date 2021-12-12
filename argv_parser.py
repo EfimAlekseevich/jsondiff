@@ -18,6 +18,8 @@ def parse_argv():
     parser.add_argument("--text", "-t", help="save result to txt", action="store_true")
     parser.add_argument("--json", "-j", help='save result to json !integer keys will replaced strings (1 -> "1")!',
                         action="store_true")
+    parser.add_argument("--cs_key_disable", "-k", help="disable case sensitivity for keys", action="store_true")
+    parser.add_argument("--cs_str_disable", "-a", help="disable case sensitivity for strings", action="store_true")
 
     # Read arguments from the command line
     args = parser.parse_args()

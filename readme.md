@@ -28,11 +28,16 @@ from pprint import pprint
 if __name__ == '__main__':
     pprint(diff(file_a, file_b))
 ```
+
 ## Core algorithm concepts:
 ### Q&A
 What data structure do you need to use? - Non linear data structure -> Trees Data Structure -> dict
 Why? - Json is Trees Data Structure
-What's the asymptotic upper bound of the algorithm? -
+What's the asymptotic upper bound of the algorithm?
+Big-O notation represents the upper bound of the running time of an algorithm.
+Thus, it gives the worst-case complexity of an algorithm.
+Linear Complexity: O(n)
+n - the number of pairs of dictionaries and items in lists, including nested dictionaries and lists
 ### Diff types:
 - key exist only in source (source, src)
 - key exist only in compared (compared, cmp)
@@ -40,7 +45,7 @@ What's the asymptotic upper bound of the algorithm? -
 
 ### Questions, cases:
 - handling of incorrect json (multiple identical keys) needed?
-- is case sensitivity in keys, strings important when comparing?
+- is case sensitivity in keys, strings important when comparing? decision: add keys for disable case sensitivity: -csk, -csc 
 - is the order of the items in the list important when comparing?
 - error handling in case of incorrect use of the program needed?
 - what is the purpose of this task?
@@ -83,7 +88,7 @@ What's the asymptotic upper bound of the algorithm? -
 
 ## Tutorial
 ```
-usage: jsondiff.py [-h] [--source SOURCE] [--compared COMPARED] [--filenames] [--result_filename RESULT_FILENAME] [--text] [--json] source_filename compared_filename
+usage: jsondiff.py [-h] [--source SOURCE] [--compared COMPARED] [--filenames] [--result_filename RESULT_FILENAME] [--text] [--json] [--cs_key_disable] [--cs_str_disable] source_filename compared_filename
 
 It is program for comparing two json files
 
@@ -102,5 +107,7 @@ optional arguments:
                         name for result file
   --text, -t            save result to txt
   --json, -j            save result to json !integer keys will replaced strings (1 -> "1")!
+  --cs_key_disable, -k  disable case sensitivity for keys
+  --cs_str_disable, -a  disable case sensitivity for strings
 
 ```

@@ -2,7 +2,6 @@ import pprint
 import json
 from argv_parser import define_designations, parse_argv
 
-
 s, c = 'src', 'cmp'
 
 
@@ -20,7 +19,7 @@ def save_result(filename: str, extension: str, result):
             f.write(result)
 
 
-def diff_lists(src: list, cmp: list):
+def diff_lists(src: list, cmp: list, cs_key=False, cs_str=False):
     """Recursive comparing list elements"""
     global c, s
     i = 0
@@ -29,12 +28,13 @@ def diff_lists(src: list, cmp: list):
     diff_dict = {s: {}, c: {}}
     while i < src_len:
         if i < cmp_len:
-            if src[i] == cmp[i]:
+            if src[i] == cmp[i] or (cs_str and isinstance(src[i], str) and isinstance(cmp[i], str) and
+                                    src[i].lower() == cmp[i].lower()):
                 pass
             elif isinstance(src[i], dict) and isinstance(cmp[i], dict):
-                diff_dict[i] = diff_dicts(src[i], cmp[i])
+                diff_dict[i] = diff_dicts(src[i], cmp[i], cs_key, cs_str)
             elif isinstance(src[i], list) and isinstance(cmp[i], list):
-                diff_dict[i] = diff_lists(src[i], cmp[i])
+                diff_dict[i] = diff_lists(src[i], cmp[i], cs_key, cs_str)
             else:
                 diff_dict[i] = {s: src[i], c: cmp[i]}
         else:
@@ -48,21 +48,29 @@ def diff_lists(src: list, cmp: list):
     return diff_dict
 
 
-def diff_dicts(src: dict, cmp: dict):
+def diff_dicts(src: dict, cmp: dict, cs_key=False, cs_str=False):
     """Recursive comparing key:value pairs"""
     global c, s
     diff_dict = {s: {}, c: {}}
+
+    if cs_key:  # all keys are made of lowercase letters
+        for key, value in cmp.copy().items():
+            del cmp[key]
+            cmp[key.lower()] = value
+
     for key, value in src.copy().items():
-        if key in cmp:
-            if src[key] == cmp[key]:
+        if (not cs_key and key in cmp) or (cs_key and key.lower() in cmp):
+            cmp_key = key.lower() if cs_key else key
+            if src[key] == cmp[cmp_key] or (cs_str and isinstance(src[key], str) and isinstance(cmp[cmp_key], str) and
+                                            src[key].lower() == cmp[cmp_key].lower()):
                 src.pop(key)
-                cmp.pop(key)
-            elif isinstance(src[key], dict) and isinstance(cmp[key], dict):
-                diff_dict[key] = diff_dicts(src.pop(key), cmp.pop(key))
+                cmp.pop(cmp_key)
+            elif isinstance(src[key], dict) and isinstance(cmp[cmp_key], dict):
+                diff_dict[key] = diff_dicts(src.pop(key), cmp.pop(cmp_key), cs_key, cs_str)
             elif isinstance(src[key], list) and isinstance(cmp[key], list):
-                diff_dict[key] = diff_lists(src.pop(key), cmp.pop(key))
+                diff_dict[key] = diff_lists(src.pop(key), cmp.pop(cmp_key), cs_key, cs_str)
             else:
-                diff_dict.update({key: {s: src.pop(key), c: cmp.pop(key)}})
+                diff_dict.update({key: {s: src.pop(key), c: cmp.pop(cmp_key)}})
         else:
             diff_dict[s].update({key: src.pop(key)})
 
@@ -71,7 +79,6 @@ def diff_dicts(src: dict, cmp: dict):
 
 
 def main():
-
     # Preparing
     global c, s
     args = parse_argv()
