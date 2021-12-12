@@ -31,26 +31,28 @@ if __name__ == '__main__':
 
 ## Core algorithm concepts:
 ### Q&A
-What data structure do you need to use? - Non linear data structure -> Trees Data Structure -> dict
-Why? - Json is Trees Data Structure
-What's the asymptotic upper bound of the algorithm?
-Big-O notation represents the upper bound of the running time of an algorithm.
-Thus, it gives the worst-case complexity of an algorithm.
-Linear Complexity: O(n)
+- What data structure do you need to use?
+    - Non linear data structure -> Trees Data Structure -> dict
+- Why?
+    - Json is Trees Data Structure
+- What's the asymptotic upper bound of the algorithm?
+    - Big-O notation represents the upper bound of the running time of an algorithm.
+    Thus, it gives the worst-case complexity of an algorithm.
+    Linear Complexity: O(n)
+- Handling of incorrect json (multiple identical keys) needed? decision: json package for loading json files 
+- Is case sensitivity in keys, strings important when comparing? decision: add keys for disable case sensitivity: -csk, -csc 
+- Is the order of the items in the list important when comparing? decision: important
+- Error handling in case of incorrect use of the program needed? decision: use help : `python jsondiff.py --help`
+- What is the purpose of this task?
+    - Help fix differences in json files? decision: you can save the differences to a json file or use the result dict
+    - Show differences between files? decision: you can save the differences to a text file
+
 n - the number of pairs of dictionaries and items in lists, including nested dictionaries and lists
 ### Diff types:
 - key exist only in source (source, src)
 - key exist only in compared (compared, cmp)
 - different values of the same key (diff, *key)
 
-### Questions, cases:
-- handling of incorrect json (multiple identical keys) needed?
-- is case sensitivity in keys, strings important when comparing? decision: add keys for disable case sensitivity: -csk, -csc 
-- is the order of the items in the list important when comparing?
-- error handling in case of incorrect use of the program needed?
-- what is the purpose of this task?
-    - help fix differences in json files?
-    - show differences between files?
 
 ### Output design:
 
@@ -83,10 +85,10 @@ n - the number of pairs of dictionaries and items in lists, including nested dic
 ```
 
 #### Problems
-- identical keys ("src" and "cmp")
-- keys as numbers (1, 2, 3) - JSON names require double quotes.
+- identical keys (s and c) - you can enter s and c using optional arguments -s, -c
+- keys-numbers (1, 2, 3) - JSON names require double quotes.
 
-## Tutorial
+## Usage
 ```
 usage: jsondiff.py [-h] [--source SOURCE] [--compared COMPARED] [--filenames] [--result_filename RESULT_FILENAME] [--text] [--json] [--cs_key_disable] [--cs_str_disable] source_filename compared_filename
 
