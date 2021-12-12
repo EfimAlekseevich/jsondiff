@@ -19,18 +19,24 @@ def save_result(filename: str, extension: str, result):
             f.write(result)
 
 
+def lowercase_keys(dct: dict):
+    """All keys are in the root of lowercase letters"""
+    for key, value in dct.copy().items():
+        del dct[key]
+        dct[key.lower()] = value
+
+
 def diff_lists(src: list, cmp: list, cs_key=False, cs_str=False):
     """Recursive comparing list elements"""
     global c, s
-    i = 0
-    src_len = len(src)
-    cmp_len = len(cmp)
     diff_dict = {s: {}, c: {}}
-    while i < src_len:
-        if i < cmp_len:
-            if src[i] == cmp[i] or (cs_str and isinstance(src[i], str) and isinstance(cmp[i], str) and
-                                    src[i].lower() == cmp[i].lower()):
-                pass
+
+    for i in range(len(src)):
+        if i < len(cmp):
+            if src[i] == cmp[i] or \
+                    (cs_str and isinstance(src[i], str) and isinstance(cmp[i], str) and src[i].lower() == cmp[
+                        i].lower()):
+                continue
             elif isinstance(src[i], dict) and isinstance(cmp[i], dict):
                 diff_dict[i] = diff_dicts(src[i], cmp[i], cs_key, cs_str)
             elif isinstance(src[i], list) and isinstance(cmp[i], list):
@@ -38,12 +44,11 @@ def diff_lists(src: list, cmp: list, cs_key=False, cs_str=False):
             else:
                 diff_dict[i] = {s: src[i], c: cmp[i]}
         else:
-            diff_dict[i] = {s: src[i]}
-        i += 1
+            diff_dict.update({j: {s: src[j]} for j in range(i, len(src))})
+            break
 
-    while i < cmp_len:
-        diff_dict[i] = {c: cmp[i]}
-        i += 1
+    for j in range(len(src), len(cmp)):
+        diff_dict[j] = {c: cmp[j]}
 
     return diff_dict
 
@@ -52,15 +57,13 @@ def diff_dicts(src: dict, cmp: dict, cs_key=False, cs_str=False):
     """Recursive comparing key:value pairs"""
     global c, s
     diff_dict = {s: {}, c: {}}
-
-    if cs_key:  # all keys are made of lowercase letters
-        for key, value in cmp.copy().items():
-            del cmp[key]
-            cmp[key.lower()] = value
+    if cs_key:
+        lowercase_keys(cmp)
 
     for key, value in src.copy().items():
         if (not cs_key and key in cmp) or (cs_key and key.lower() in cmp):
             cmp_key = key.lower() if cs_key else key
+
             if src[key] == cmp[cmp_key] or (cs_str and isinstance(src[key], str) and isinstance(cmp[cmp_key], str) and
                                             src[key].lower() == cmp[cmp_key].lower()):
                 src.pop(key)
@@ -83,7 +86,6 @@ def main():
     global c, s
     args = parse_argv()
     s, c = define_designations(args)
-
     source = [get_json(args.source_filename)]
     compared = [get_json(args.compared_filename)]
 
@@ -96,7 +98,6 @@ def main():
         save_result(result_filename, 'txt', pprint.pformat(result))
     if args.json:
         save_result(result_filename, 'json', result)
-
     pprint.pprint(result)
 
 
