@@ -20,27 +20,28 @@ Format example:
 the difference between two JSON files
 
 ## Core algorithm concepts:
-
 ### Diff types:
 - key/index exist only in source (source, src)
 - key/index exist only in compared (compared, cmp)
 - different values of the same key/index (diff, *key)
 
 ### Output design:
+The output data will have a dict type and will repeat the source json file.
 ```
 s = 'src' #  designation of the source file
 c = 'cmp' #  designation of the compared file
 ```
+
 #### Dict differences:
 ```
 {
-'src': {key1: value1, key2: value2, ...}, # pairs only in source dict
-'cmp': {key3: value3, key4: value4, ...}, # pairs only in source dict
-'key5': {'src': value5, 'cmp': 'value6'} # pairs with identical key but different values
+s: {key1: value1, key2: value2, ...}, # pairs only in source dict
+c: {key3: value3, key4: value4, ...}, # pairs only in source dict
+'key5': {s: value5, c: 'value6'} # pairs with identical key but different values
 'key6': { pairs with identical key but different values with type list(or dict)
-        'src': {key7: value7, key8: value8, ...}, # pairs only in source dict
-        'cmp': {key3: value3, key4: value4, ...}, # pairs only in source dict
-        'key5': {'src': value5, 'cmp': 'value6'} # pairs with identical key but different values}
+        s: {key7: value7, key8: value8, ...}, # pairs only in source dict
+        c: {key3: value3, key4: value4, ...}, # pairs only in source dict
+        'key5': {s: value5, c: 'value6'} # pairs with identical key but different values}
         'key7': {etc}
 }
 ```
@@ -48,13 +49,13 @@ c = 'cmp' #  designation of the compared file
 #### List differences:
 ```
 {
-'src': {3: value3, 4: value4, ...}, # elements only in source list (3,4 - indexes of elements in source list)
-'cmp': {}, # empty because the src list is longer
-0: {'src': 'value_s0', 'cmp': 'value_c0'} # elements with identical index but different values (0 - index)
+s: {3: value3, 4: value4, ...}, # elements only in source list (3,4 - indexes of elements in source list)
+c: {}, # empty because the src list is longer
+0: {s: 'value_s0', c: 'value_c0'} # elements with identical index but different values (0 - index)
 1: { # elements with identical index but different values with type list(or dict)
-        'src': {}, # empty because the cmp list is longer
-        'cmp': {3: value_3, 4: value_4, ...}, # elements only in cmp list (3,4 - indexes of elements in source list)
-        1: {'src': value_s1, 'cmp': 'value_c1'} # elements with identical index but different values
+        s: {}, # empty because the cmp list is longer
+        c: {3: value_3, 4: value_4, ...}, # elements only in cmp list (3,4 - indexes of elements in source list)
+        1: {s: value_s1, c: 'value_c1'} # elements with identical index but different values
         2: {etc}
 }
 ```
@@ -62,6 +63,7 @@ c = 'cmp' #  designation of the compared file
 #### Problems
 - identical keys (s and c) - you can enter s and c using optional arguments -s, -c
 - keys-numbers (1, 2, 3) - JSON names require double quotes.
+- redundancy of s:{} and c:{} - good for machine processing, bad for human vision
 
 ## Usage
 ```
